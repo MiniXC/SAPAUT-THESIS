@@ -1,0 +1,269 @@
+%%%%%%%%%%%%%%%%%%%%%%%%
+% Sample use of the infthesis class to prepare an MSc thesis.
+% This can be used as a template to produce your own thesis.
+% Date: June 2019
+%
+%
+% The first line specifies style options for taught MSc.
+% You should add a final option specifying your degree.
+% *Do not* change or add any other options.
+%
+% So, pick one of the following:
+% \documentclass[msc,deptreport,adi]{infthesis}     % Adv Design Inf
+% \documentclass[msc,deptreport,ai]{infthesis}      % AI
+% \documentclass[msc,deptreport,cogsci]{infthesis}  % Cognitive Sci
+% \documentclass[msc,deptreport,cs]{infthesis}      % Computer Sci
+% \documentclass[msc,deptreport,cyber]{infthesis}   % Cyber Sec
+% \documentclass[msc,deptreport,datasci]{infthesis} % Data Sci
+% \documentclass[msc,deptreport,di]{infthesis}      % Design Inf
+% \documentclass[msc,deptreport,inf]{infthesis}     % Informatics
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\documentclass[bsc,deptreport]{infthesis} % Do not change except to add your degree (see above).
+
+\usepackage{blindtext,letltxmacro,xcolor,xparse}
+\usepackage{lipsum}% for simulating real text
+\usepackage{sator}
+\usepackage{wrapfig}
+
+\LetLtxMacro{\blindtextblindtext}{\blindtext}
+\LetLtxMacro{\blindtextBlindtext}{\Blindtext}
+
+\RenewDocumentCommand{\blindtext}{O{\value{blindtext}}}{%
+  \color{gray}\blindtextblindtext[#1]\color{black}
+}
+\RenewDocumentCommand{\Blindtext}{O{\value{blindtext}}O{\value{Blindtext}}}{%
+  \color{gray}\blindtextBlindtext[#1][#2]\color{black}
+}
+
+% https://texblog.org/2013/02/01/inline-lists-in-latex-using-paralist/
+\usepackage{paralist}
+\usepackage{float}
+\usepackage{todonotes}
+
+\usepackage{graphicx} %package to manage images
+\graphicspath{ {images/} }
+
+\usepackage{natbib}
+\bibliographystyle{abbrvnat}
+\setcitestyle{authoryear,open={(},close={)}}
+
+\begin{document}
+
+\setlength{\parindent}{0em}
+
+\begin{preliminary}
+
+\title{Punctuation Annotation for Streamed Output from Automatic Speech Recognition Systems}
+
+\author{Christoph Minixhofer}
+
+\abstract{
+  To improve readability, punctuation prediction is typically performed on text output by an Automatic Speech Recognition (ASR) model. We introduce a transformer-based model to predict punctuation marks on unpunctuated text suitable for text streamed word-for-word, as is often the case for ASR models. As the model's performance differs based on the punctuation mark class, we propose a decoding strategy which delays the insertion of punctuation marks in case of uncertainty until a specific threshold is reached. Leveraging existing pre-trained language models in conjunction with a special token for acoustic pause features, we achieve state-of-the-art performance on both the IWSLT2011 and MGB datasets for punctuation prediction. To make the model viable for real-time use in combination with an ASR system, we truncate the input aggressively, which we show does not degrade model performance. We also quantize the model weights to allow for its use on low-resource devices.
+}
+
+\maketitle
+
+\section*{Acknowledgements}
+Any acknowledgements go here. 
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+\end{preliminary}
+
+\chapter{Introduction}
+
+\section{Punctuation Annotation in an ASR Pipeline}
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+\centering
+\includegraphics[width=0.48\textwidth]{example-image-a.pdf}
+\caption{figure showing the ASR pipeline with punctuation annotation at the end}
+\end{wrapfigure}
+
+\blindtext[1]
+\todo[inline]{write about how state-of-the-art ASR systems still do not inherently model punctuation and why this is the case}
+\todo[inline,color=green]{create diagram showing punctuation annotation as last step of ASR for dictation}
+
+\section{Streamed Punctuation Annotation}
+\blindtext[1]
+\todo[inline]{define streamed punctuation annotation}
+\todo[inline]{talk about dictation and dialog systems as possible use cases}
+\todo[inline]{enumerate the possible configurations of such as systems as a) server-side ASR and punctuation and b) server-side ASR, client-side punctuation and c) client-side ASR and punctuation}
+
+\section{The Need for Inference Speed}
+\blindtext[1]
+\todo[inline]{explain why fast inference is needed for this task and how that might clash with using large pre-trained models}
+
+\chapter{Background}
+
+\section{Existing Approaches to Punctuation Annotation}
+
+\subsection{Feature Engineering}
+\blindtext[1]
+\todo[inline]{explain the different features that have been used for punctuation annotation, including POS tags, pause \& prosody information, up to speech2vec}
+
+\subsection{Learning Methods}
+\blindtext[1]
+\todo[inline]{explain the different learning methods that have been used for punctuation annotation, from n-gram language models to BERT}
+
+\subsection{Datasets}
+\blindtext[1]
+\todo[inline]{explain the different datasets used and their domains e.g. spontaneous vs. scripted speech}
+\todo[inline]{mention how reproducibility is a problem to motivate our open source dataset loading library later}
+
+\subsection{Overview of Results}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth,height=0.4\textwidth]{example-image-c.pdf}
+\caption{\sator}
+\end{figure}
+
+\blindtext[1]
+
+\todo[inline,color=green]{figure 1: a table with columns for features (e.g. text + pos tags), methods (e.g. BERT) and dataset (e.g. MGB). a version of the table including papers for each method is in the appendix}
+\todo[inline]{explain how certain punctuation marks have higher f1 scores and others lower, explain with human agreement + class imbalance}
+\todo[inline]{explain how transformers are clear state-of-the-art performers}
+\todo[inline]{explain how certain datasets lead to better performance than others}
+\todo[inline]{explain how speech features consistently lead to performance improvements}
+
+\section{Pre-trained Transformer Models in NLP}
+\subsection{Large, Pre-trained Models}
+\blindtext[1]
+\todo[inline]{explain the trade-off between speed and model size in context of the general trend for large pre-trained language models. these models can make it much less resource-intensive to solve a task like this when training, but need extra work to be efficient when doing inference}
+
+\subsection{Pre-training}
+\blindtext[1]
+\todo[inline]{explain how transformers are pre-trained as language models using mainly masked token prediction. this is important to motivate masked punctuation prediction}
+
+\subsection{Fine-tuning}
+\blindtext[1]
+\todo[inline]{explain how a pre-trained transformer can be fine-tuned. mention that different heads (classification,tagging) can fundamentally alter performance}
+
+\subsection{Efficiency}
+\blindtext[2]
+\todo[inline]{explain how dot-product attention is inefficient on longer sequences}
+\todo[inline]{explain how inference speed can be increased (compression)}
+\todo[inline]{explain why we do not use "efficient transformers" even though we want to build an efficient transformer - explain that the benefit of pre-trained models outweighs the efficiency gains}
+
+\section{Pause Durations as a Feature}
+\blindtext[1]
+\todo[inline]{introduce pause durations as the perfect feature to balance the performance gain from pre-training with the important information contained in audio, while also explaining how this works best for a streamed approach}
+
+\section{Three Ways to Model Punctuation Annotation}
+\begin{wrapfigure}{r}{0.5\textwidth}
+\centering
+\includegraphics[width=0.48\textwidth]{example-image-a.pdf}
+\caption{\sator}
+\end{wrapfigure}
+\blindtext[1]
+\todo[inline]{explain punctuation annotation as a) tagging b) seq2seq and c) classification tasks}
+\todo[inline,color=green]{a figure/table contrasting the three approaches}
+
+\chapter{Streamed Punctuation Classification Transformer}
+
+\section{Masked Punctuation Prediction}
+\begin{wrapfigure}{r}{0.5\textwidth}
+\centering
+\includegraphics[width=0.48\textwidth]{example-image-b.pdf}
+\caption{\sator}
+\end{wrapfigure}
+\blindtext[1]
+\todo[inline]{explain how we combine a model for different lookaheads into one model using masking}
+\todo[inline,color=green]{the figure shows training samples to visualise the masking}
+
+\section{Word Lookahead and Decoding}
+\blindtext[1]
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.48\textwidth]{example-image-c.pdf}
+\caption{\sator}
+\end{figure}
+\blindtext[1]
+\todo[inline]{explain how we decode punctuation marks at inference time using entropy and assumptions on how easy different punctuation marks are to predict}
+\todo[inline,color=green]{the figure is an algorithm block showing the decoding algo}
+
+\section{Adding Pause Features}
+\begin{wrapfigure}{r}{0.5\textwidth}
+\centering
+\includegraphics[width=0.48\textwidth]{example-image-b.pdf}
+\caption{\sator}
+\end{wrapfigure}
+\blindtext[2]
+\todo[inline]{explain how we add pause features by aligning ctm files with transcripts, explain how we decide to only use pauses >200ms}
+\todo[inline]{introduce \texttt{PunctuationDataset} to load data easily}
+\todo[inline,color=green]{figure shows the distributon of pause lengths}
+
+\newpage
+
+\section{Input Truncation for Faster Training and Inference}
+\blindtext[2]
+\todo[inline]{explain how we truncate input and reference back to dot-product attention}
+
+\chapter{Experiments and Results}
+
+\section{Baseline}
+\begin{wrapfigure}{r}{0.5\textwidth}
+\centering
+\includegraphics[width=0.48\textwidth]{example-image-c.pdf}
+\caption{\sator}
+\end{wrapfigure}
+\blindtext[1]
+\todo[inline]{introduce baseline for sequence classification using our dataset + in addition to a learned baseline (e.g. lstm) show a random stratified baseline to establish lower bounds given class imbalance}
+\todo[inline]{refer back to background to explain why MGB and IWSLT perform differently}
+\todo[inline]{introduce the concepts of performance at differing lookaheads + decoded performance with variable lookahead + the measure of average lookahead}
+\todo[inline,color=green]{figure shows the results of the baselines in tabular form}
+
+\section{Truncation}
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth,height=0.36\textwidth]{example-image-a.pdf}
+\caption{\sator}
+\end{figure}
+\blindtext[2]
+\todo[inline]{show how truncation keeps performance while increasing training \& inference speed}
+\todo[inline]{show how question marks are the first to degrade in performance}
+\todo[inline,color=green]{figure shows input length vs. speed vs. f1 scores}
+
+\section{Downsampling}
+\begin{wrapfigure}{r}{0.5\textwidth}
+\centering
+\includegraphics[width=0.48\textwidth]{example-image-c.pdf}
+\caption{\sator}
+\end{wrapfigure}
+\blindtext[1]
+\todo[inline]{show how downsampling improves performance for minority classes, and introduce way to prevent recall/precision mismatch (threshold based on class)}
+\todo[inline]{also show how downsample leads to higher performance given less training data}
+\todo[inline,color=green]{figure shows initial class distribution vs downsampled as bar plot}
+
+\section{Pause Features}
+\blindtext[2]
+\todo[inline]{show how downsampling improves performance for minority classes, and introduce way to prevent recall/precision mismatch (threshold based on class)}
+
+
+\section{Model and Training Data Size}
+\blindtext[3]
+\todo[inline]{show how different roberta model sizes affect performance while giving all of them the same time budget to train}
+\todo[inline]{show how inference time increases as models get larger}
+\todo[inline]{show how inference time can be decreased again by quantizing and pruning}
+
+\chapter{Conclusion and Future Work}
+\blindtext[2]
+\todo[inline]{explain what the system looks like in action and reiterate how much each improvement contributes to both speed and performance, surmising which system features could most likely be improved the most}
+\todo[inline]{mention integrating this into an end-to-end ASR system as improvement + using different pre-trained transformer models and comparing them}
+
+\bibliography{mybibfile}
+
+%% You can include appendices like this:
+% \appendix
+% 
+% \chapter{First appendix}
+% 
+% \section{First section}
+% 
+% Markers do not have to consider appendices. Make sure that your contributions
+% are made clear in the main body of the dissertation (within the page limit).
+
+\end{document}
